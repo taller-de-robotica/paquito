@@ -71,3 +71,14 @@ colcon build --symlink-install --executor sequential --parallel-workers 1
 # Para usar:
 
 source install/local_setup.bash
+
+# Probar con
+## Talker
+
+. ~/ROS/ros2_humble/install/local_setup.bash
+ros2 run demo_nodes_cpp talker
+
+## Listener
+. ~/ros2_humble/install/local_setup.bash
+ros2 run demo_nodes_py listener
+
