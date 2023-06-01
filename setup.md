@@ -1,9 +1,7 @@
-#
 # ROS 2
-#
 
 Siguiendo:
-https://docs.ros.org/en/humble/Installation/Alternatives/Ubuntu-Development-Setup.html
+[Compile Humble](https://docs.ros.org/en/humble/Installation/Alternatives/Ubuntu-Development-Setup.html)
 
 ```
 sudo apt update && sudo apt upgrade
@@ -24,10 +22,10 @@ sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo bullseye) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
 
 sudo apt update && sudo apt install -y \
-  python3-flake8-docstrings \
-  python3-pip \
-  python3-pytest-cov \
-  ros-dev-tools
+  python3-flake8-docstrings \
+  python3-pip \
+  python3-pytest-cov \
+  ros-dev-tools
 ```
 
 Si se instala mediante ssh 
@@ -35,28 +33,33 @@ Si se instala mediante ssh 
 ```
 export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring
 ```
+esto porque sino la raspberry solicita localmente una contraseña para acceder al key ring, pero esta solicitud no se transmite por ```ssh``` y la instalación se bloquea.
 
-# Como si fuera Ubuntu 20.04
+Como si fuera Ubuntu 20.04
 
+```
 python3 -m pip install -U \
-   flake8-blind-except \
-   flake8-builtins \
-   flake8-class-newline \
-   flake8-comprehensions \
-   flake8-deprecated \
-   flake8-import-order \
-   flake8-quotes \
-   "pytest>=5.3" \
-   pytest-repeat \
-   pytest-rerunfailures
+   flake8-blind-except \
+   flake8-builtins \
+   flake8-class-newline \
+   flake8-comprehensions \
+   flake8-deprecated \
+   flake8-import-order \
+   flake8-quotes \
+   "pytest>=5.3" \
+   pytest-repeat \
+   pytest-rerunfailures
+```
 
-# Agregar /home/paquito/.local/bin a $PATH en .bashrc
+Agregar /home/paquito/.local/bin a $PATH en .bashrc
 
+```
 cd
 mkdir -p ROS/ros2_humble/src
 cd ROS/ros2_humble
 vcs import --input https://raw.githubusercontent.com/ros2/ros2/humble/ros2.repos src
 sudo apt upgrade
+```
 
 # Es necesario lobotomizar ignition, ros2/rviz, ros2/rosbag2
 
