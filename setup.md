@@ -67,6 +67,8 @@ sudo apt upgrade
 
 Instalar dependencias indicadas por ```ROS 2```:
 
+Lobotomizar, es decir, borrar la carpeta **ignition**, si no aparecen dependencias que no es posible satisfacer.  Después de esto se puede realizar el proceso para instalar dependencias:
+
 ```
 sudo rosdep init
 rosdep update
@@ -75,7 +77,7 @@ rosdep install --from-paths src --ignore-src -y --skip-keys "fastcdr rti-connext
 cd ~/ROS/ros2_humble/
 ```
 
-A partir de aquí es necesario lobotomizar, es decir, borrar las carpetas **ignition, ros2/rviz, ros2/rosbag2** que se descargan dentro de ```src```, pues no compilan.  Tampoco se puede hacer antes pues las dependencias solictian estos paquetes.  Después de esto se puede realizar el proceso para instalar dependencias:
+A partir de aquí es necesario borrar las carpetas **ros2/rviz, ros2/rosbag2** que se descargan dentro de ```src```, pues no compilan.  Tampoco se puede hacer antes pues las dependencias solicitian estos paquetes y si no están no se descargan todas las bibliotecas que harán falta.
 
 Para el siguiente paso, la herramienta de compilación ```colcon``` intentará utilizar todos los cores de la Raspberry, pero entonces el proceso se traba en los paquetes más pesados.  Por ejemplo, ```rclcpp``` no pasa del 42% o 74%.  Siguiendo lo explicado en [Executor](https://colcon.readthedocs.io/en/released/reference/executor-arguments.html) y [Number of threads](https://answers.ros.org/question/368249/colcon-build-number-of-threads/) habrá que compilar secuencialmente:
 
