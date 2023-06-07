@@ -5,7 +5,8 @@
 # Actualizado por @blackzafiro
 
 import io
-import picamera2
+from picamera2 import Picamera2
+from picamera2.encoders import MJPEGEncoder, Quality
 import logging
 import socketserver
 from threading import Condition
@@ -83,13 +84,22 @@ class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
     allow_reuse_address = True
     daemon_threads = True
 
-with picamera2.Picamera2() as camera:
+with Picamera2() as picam2:
+    conf = picam2.create_video_configuration(
+                main={"size": (1280, 720)},
+                lores={})
+    picam2.configure(conf)
+
+    encoder = MJPEGEncoder()
+    picam2.start()
+    
     output = StreamingOutput()
-    camera.start_recording(output, format='mjpeg')
+    # VERY_LOW, LOW, MEDIUM (default), HIGH, VERY_HIGH
+    picam2.start_recording(encoder, output, Quality.HIGH)
     try:
         address = ('', 8000)
         server = StreamingServer(address, StreamingHandler)
         server.serve_forever()
     finally:
-        camera.stop_recording()
+        picam2.stop_recording()
 
