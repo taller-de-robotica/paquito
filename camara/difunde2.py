@@ -1,15 +1,20 @@
 #!/usr/bin/python3
 
-# Mostly copied from https://picamera.readthedocs.io/en/release-1.13/recipes2.html
+# Original:
 # https://raw.githubusercontent.com/raspberrypi/picamera2/main/examples/mjpeg_server.py
 # Run this script, then point a web browser at http:<this-ip-address>:8000
 # Note: needs simplejpeg to be installed (pip3 install simplejpeg).
+# Modificado para paquito
 
+from _socket import _RetAddress
+from collections.abc import Callable
 import io
 import logging
 import socketserver
 from http import server
+from socketserver import _AfInetAddress, BaseRequestHandler
 from threading import Condition
+from typing import Any
 
 from picamera2 import Picamera2
 from picamera2.encoders import JpegEncoder
@@ -22,7 +27,7 @@ PAGE = """\
 </head>
 <body>
 <h1>Picamera2 MJPEG Streaming Demo</h1>
-<img src="stream.mjpg" width="640" height="480" />
+<img src="stream.mjpg" width="1280" height="720" />
 </body>
 </html>
 """
@@ -83,9 +88,14 @@ class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
     allow_reuse_address = True
     daemon_threads = True
 
+    def __init__(self, server_address: _AfInetAddress, RequestHandlerClass: Callable[[Any, _RetAddress, Self], BaseRequestHandler], bind_and_activate: bool = True) -> None:
+        super().__init__(server_address, RequestHandlerClass, bind_and_activate)
+        print("Dirección: ", server_address)
+
 
 picam2 = Picamera2()
-picam2.configure(picam2.create_video_configuration(main={"size": (640, 480)}))
+conf = picam2.create_video_configuration(main={"size": (1280, 720)})
+picam2.configure(conf)
 output = StreamingOutput()
 picam2.start_recording(JpegEncoder(), FileOutput(output))
 
