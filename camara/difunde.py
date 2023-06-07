@@ -2,9 +2,10 @@
 
 # Original en:
 # https://gist.github.com/xxl007/5db5a3625f3a5914541c84c37b380bfa
+# Actualizado por @blackzafiro
 
 import io
-import picamera
+import picamera2
 import logging
 import socketserver
 from threading import Condition
@@ -82,7 +83,7 @@ class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
     allow_reuse_address = True
     daemon_threads = True
 
-with picamera.PiCamera(resolution='1280x720', framerate=24) as camera:
+with picamera2.PiCamera2(resolution='1280x720', framerate=24) as camera:
     output = StreamingOutput()
     camera.start_recording(output, format='mjpeg')
     try:
