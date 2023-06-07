@@ -6,17 +6,14 @@
 # Note: needs simplejpeg to be installed (pip3 install simplejpeg).
 # Modificado para paquito
 
-from _socket import _RetAddress
-from collections.abc import Callable
 import io
 import logging
 import socketserver
 from http import server
-from socketserver import _AfInetAddress, BaseRequestHandler
 from threading import Condition
-from typing import Any
 
 from picamera2 import Picamera2
+from libcamera import controls
 from picamera2.encoders import JpegEncoder
 from picamera2.outputs import FileOutput
 
@@ -88,7 +85,7 @@ class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
     allow_reuse_address = True
     daemon_threads = True
 
-    def __init__(self, server_address: _AfInetAddress, RequestHandlerClass: Callable[[Any, _RetAddress, Self], BaseRequestHandler], bind_and_activate: bool = True) -> None:
+    def __init__(self, server_address, RequestHandlerClass, bind_and_activate):
         super().__init__(server_address, RequestHandlerClass, bind_and_activate)
         print("Dirección: ", server_address)
 
