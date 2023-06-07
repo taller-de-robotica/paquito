@@ -85,8 +85,8 @@ class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
     allow_reuse_address = True
     daemon_threads = True
 
-    def __init__(self, server_address, RequestHandlerClass, bind_and_activate):
-        super().__init__(server_address, RequestHandlerClass, bind_and_activate)
+    def __init__(self, server_address, bind_and_activate):
+        super().__init__(server_address, bind_and_activate)
         print("Dirección: ", server_address)
 
 
