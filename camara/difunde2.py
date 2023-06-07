@@ -98,6 +98,7 @@ conf = picam2.create_video_configuration(main={"size": (1280, 720)})
 picam2.configure(conf)
 output = StreamingOutput()
 picam2.start_recording(JpegEncoder(), FileOutput(output))
+picam2.set_controls({"AfMode": controls.AfModeEnum.Continuous, "AfSpeed": controls.AfSpeedEnum.Fast})
 
 try:
     address = ('', 8000)
