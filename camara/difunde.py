@@ -7,6 +7,8 @@
 import io
 from picamera2 import Picamera2
 from picamera2.encoders import MJPEGEncoder, Quality
+from picamera2.outputs import FileOutput
+
 import logging
 import socketserver
 from threading import Condition
@@ -93,7 +95,9 @@ with Picamera2() as picam2:
     encoder = MJPEGEncoder()
     picam2.start()
     
-    output = StreamingOutput()
+    stream = StreamingOutput()
+    output = FileOutput(stream)
+
     # VERY_LOW, LOW, MEDIUM (default), HIGH, VERY_HIGH
     picam2.start_recording(encoder, output, Quality.HIGH)
     try:
