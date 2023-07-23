@@ -90,18 +90,18 @@ colcon build --symlink-install --executor sequential --parallel-workers 1
 Una vez ha terminado el proceso de compilación ya podemos utilizar ```ROS 2```, en cada terminar ejecutar:
 
 ```
-source install/local_setup.bash
+source install/local_setup.sh
 ```
 
 Probar en dos terminales con:
 ## Talker
 ```
-. ~/ROS/ros2_humble/install/local_setup.bash
+. ~/ROS/ros2_humble/install/local_setup.sh
 ros2 run demo_nodes_cpp talker
 ```
 
 ## Listener
 ```
-. ~/ros2_humble/install/local_setup.bash
+. ~/ros2_humble/install/local_setup.sh
 ros2 run demo_nodes_py listener
 ```
