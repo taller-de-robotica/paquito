@@ -5,7 +5,7 @@
 #pip3 install imutils
 #pip3 install smbus2
 
-IN_RASPBERRY = True
+IN_RASPBERRY = False
 
 import cv2
 import io
@@ -40,13 +40,14 @@ PAGE = """\
 </html>
 """
 
-sm_slave_addr = 0x8    # dirección del bus en hexadecimal
-bus = SMBus(1)         # indica /dev/ic2-1
-sleep_interval = 0.1
+if IN_RASPBERRY:
+    sm_slave_addr = 0x8    # dirección del bus en hexadecimal
+    bus = SMBus(1)         # indica /dev/ic2-1
+    sleep_interval = 0.1
 
-STOP = 0b00000001
-FORWARD = 0b00001111
-BACKWARD = 0b11110000
+    STOP = 0b00000001
+    FORWARD = 0b00001111
+    BACKWARD = 0b11110000
 
 
 def send_command(command):
@@ -93,6 +94,7 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
             if command == 'forward':
                 ## Descomenta para que envíe el comando al Arduino
                 #send_command(FORWARD)
+                pass
             content = '{"command": "forward", "status": "ok"}'.encode('utf-8')
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
