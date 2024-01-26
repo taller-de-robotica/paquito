@@ -5,7 +5,7 @@
 #pip3 install imutils
 #pip3 install smbus2
 
-IN_RASPBERRY = False
+IN_RASPBERRY = True
 
 import cv2
 import io
@@ -93,7 +93,9 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
             print("POST body:", command)
             if command == 'forward':
                 ## Descomenta para que envíe el comando al Arduino
-                #send_command(FORWARD)
+                send_command(FORWARD)
+            if command == 'backward':
+                send_command(BACKWARD)
                 pass
             content = '{"command": "forward", "status": "ok"}'.encode('utf-8')
             self.send_response(200)
