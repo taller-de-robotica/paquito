@@ -7,7 +7,7 @@
 
 IN_RASPBERRY = True
 
-import cv2
+
 import io
 import logging
 import socketserver
@@ -20,6 +20,7 @@ if IN_RASPBERRY:
     from picamera2.encoders import JpegEncoder
     from picamera2.outputs import FileOutput
 else:
+    import cv2
     from imutils.video import VideoStream
     import threading
 
