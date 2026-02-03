@@ -22,6 +22,14 @@ def generate_launch_description():
             name='ps_control_node',
             output='screen',
             emulate_tty=True # Importante para ver los logs en la terminal
+        ),
+
+        # 3. Nodo para ver imágenes
+        Node(
+            package='camera_viewer',
+            executable='viewer_node',
+            name='viewer_node',
+            output='screen',
         )
     ])
 

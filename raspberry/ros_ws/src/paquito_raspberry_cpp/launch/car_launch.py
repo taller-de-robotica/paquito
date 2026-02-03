@@ -19,5 +19,17 @@ def generate_launch_description():
             executable='car_velocity_subscriber',
             output='screen',
         ),
+        Node(
+            package='rpy_camera', # Nombre que pusiste en setup.py
+            executable='camera_publisher_node',    # El nombre del entry_point
+            name='pi_camera_streamer',
+            output='screen',
+            parameters=[{
+                'use_sim_time': False
+            }],
+            remappings=[
+                ('/video_frames', '/robot/camera/image_raw')
+            ]
+        )
     ])
 
