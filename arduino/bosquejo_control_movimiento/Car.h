@@ -60,7 +60,8 @@ private:
   //Los siguientes son nuevos y son para calcular la velocidad
   unsigned long tiempoAnterior = 0;
   unsigned long pulsosAnteriores = 0;
-  const float PPR = 1320.0;
+  //const float PPR = 1320.0; valor antiguo y de prueba
+  const float PPR = 683.0; //Valor adquirido empíricamente
   const int intervaloMuestreo = 100; // 100ms es un buen equilibrio (10Hz)
 };
 
