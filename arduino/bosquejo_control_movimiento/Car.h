@@ -43,10 +43,10 @@ public:
 
   void begin();
   void read(int readings[2]);
-  double getCount();
+  int getCount();
   void reset_count();
   int update();
-  float getVelocidad();
+  double getVelocidad();
 private:
   const unsigned int S1_PIN;
   const unsigned int S2_PIN;
@@ -95,6 +95,7 @@ public:
   void setSignedSpeeds(int16_t signedSpeeds[NUM_WHEELS]);
   void updateEncoders();
 
+  float getVelocidad(WheelId id);
   
   double count(WheelId id);
 private:

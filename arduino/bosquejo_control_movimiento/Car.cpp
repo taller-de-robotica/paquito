@@ -1,6 +1,6 @@
 #include "Arduino.h"
 #include "Car.h"
-#include <cmath>
+//#include <cmath>
 
 
 // Wheel
@@ -136,7 +136,7 @@ double Encoder::getVelocidad(){
     // (DeltaPulsos / PPR) = Vueltas
     // Vueltas * 2 * PI = Radianes
     // Radianes / Tiempo = Rad/s
-    double velocidadRadS = (deltaPulsos / PPR) * 2.0 * M_PI / deltaTiempoSegundos;
+    double velocidadRadS = (deltaPulsos / PPR) * 2.0 * 3.141592653 / deltaTiempoSegundos;
 
     // E. Actualizar variables "anteriores" para el siguiente ciclo
     pulsosAnteriores = pulsosActuales;

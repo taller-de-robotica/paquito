@@ -46,6 +46,13 @@ const int LeftMotorS2PinLB = 37;    // Rear Left Motor encoder Signal 2 Green
 const int speedPinLB = 12;          // Rear Wheel PWM pin connect Model-Y M_A ENB
 
 
+
+// Variables para temporizador de impresión en el PC (evita usar delays)
+unsigned long lastEncoderTime = 0;
+unsigned long lastSpeedTime = 0;
+
+
+
 #include "Speak.h"
 #include "Car.h"
 
@@ -313,8 +320,6 @@ Packet rxData;
 volatile bool newData = false;
 int16_t wheel_speeds[Car::NUM_WHEELS];
 
-// Variable para temporizador de impresión en el PC (evita usar delays)
-unsigned long lastPrintTime = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -390,8 +395,8 @@ void loop() {
 
   // 3. === IMPRESIÓN DE ENCODERS EN EL MONITOR SERIAL DE PC ===
   // Imprimimos cada medio segundo (500 ms)
-  if (millis() - lastPrintTime >= 500) {
-    lastPrintTime = millis();
+  if (millis() - lastEncoderTime >= 500) {
+    lastEncoderTime = millis();
     
     Serial.println("====== ENCODERS ======");
     Serial.print("FL: "); Serial.println(paquito.count(FL));
@@ -409,13 +414,13 @@ void loop() {
     Serial2.print(" ");
   }
   Serial2.println("[/ENC]");
-
+  }
 
 
   // 4. === IMPRESIÓN DE VELOCIDAD DE LOS MOTORES ===
   // Imprimimos cada  segundo (1000 ms)
-  if (millis() - lastPrintTime >= 1000) {
-    lastPrintTime = millis();
+  if (millis() - lastSpeedTime >= 1000) {
+    lastSpeedTime = millis();
     
     Serial.println("====== VELOCIDADES ======");
     Serial.print("FL: "); Serial.println(paquito.getVelocidad(FL));
@@ -423,7 +428,7 @@ void loop() {
     Serial.print("BL: "); Serial.println(paquito.getVelocidad(BL));
     Serial.print("BR: "); Serial.println(paquito.getVelocidad(BR));
     Serial.println("======================");
-
+  }
 
 
   if (speak) {
