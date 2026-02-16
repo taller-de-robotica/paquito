@@ -313,6 +313,8 @@ Packet rxData;
 volatile bool newData = false;
 int16_t wheel_speeds[Car::NUM_WHEELS];
 
+// Variable para temporizador de impresión en el PC (evita usar delays)
+unsigned long lastPrintTime = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -359,6 +361,10 @@ void limitSpeed(int16_t signedSpeeds[Car::NUM_WHEELS]){
 }
 
 void loop() {
+
+  // 1. === POLLING DE ENCODERS (DEBE EJECUTARSE SIEMPRE) ===
+  paquito.updateEncoders();
+
   if (newData) {
     // Depura para verificar qué llega
     // Serial.print("FL: "); Serial.print(rxData.val.fl);
@@ -382,6 +388,18 @@ void loop() {
     decrease_speed_factor();
   }
 
+  // 3. === IMPRESIÓN DE ENCODERS EN EL MONITOR SERIAL DE PC ===
+  // Imprimimos cada medio segundo (500 ms)
+  if (millis() - lastPrintTime >= 500) {
+    lastPrintTime = millis();
+    
+    Serial.println("====== ENCODERS ======");
+    Serial.print("FL: "); Serial.println(paquito.count(FL));
+    Serial.print("FR: "); Serial.println(paquito.count(FR));
+    Serial.print("BL: "); Serial.println(paquito.count(BL));
+    Serial.print("BR: "); Serial.println(paquito.count(BR));
+    Serial.println("======================");
+
 
   // Enviar información del codificador
   Serial2.print("[ENC] ");
@@ -391,6 +409,21 @@ void loop() {
     Serial2.print(" ");
   }
   Serial2.println("[/ENC]");
+
+
+
+  // 4. === IMPRESIÓN DE VELOCIDAD DE LOS MOTORES ===
+  // Imprimimos cada  segundo (1000 ms)
+  if (millis() - lastPrintTime >= 1000) {
+    lastPrintTime = millis();
+    
+    Serial.println("====== VELOCIDADES ======");
+    Serial.print("FL: "); Serial.println(paquito.getVelocidad(FL));
+    Serial.print("FR: "); Serial.println(paquito.getVelocidad(FR));
+    Serial.print("BL: "); Serial.println(paquito.getVelocidad(BL));
+    Serial.print("BR: "); Serial.println(paquito.getVelocidad(BR));
+    Serial.println("======================");
+
 
 
   if (speak) {

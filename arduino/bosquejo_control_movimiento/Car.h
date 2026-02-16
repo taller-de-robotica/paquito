@@ -43,8 +43,10 @@ public:
 
   void begin();
   void read(int readings[2]);
-  double count();
+  double getCount();
   void reset_count();
+  int update();
+  float getVelocidad();
 private:
   const unsigned int S1_PIN;
   const unsigned int S2_PIN;
@@ -53,6 +55,13 @@ private:
   int _s1State;
   int _s2State;
   int _s1LastState;
+  double ultimaVelocidadRadS=0;
+
+  //Los siguientes son nuevos y son para calcular la velocidad
+  unsigned long tiempoAnterior = 0;
+  unsigned long pulsosAnteriores = 0;
+  const float PPR = 1320.0;
+  const int intervaloMuestreo = 100; // 100ms es un buen equilibrio (10Hz)
 };
 
 class Car
@@ -84,7 +93,9 @@ public:
   void rotateClockwise(unsigned int speed);
   void rotateCounterClockwise(unsigned int speed);
   void setSignedSpeeds(int16_t signedSpeeds[NUM_WHEELS]);
+  void updateEncoders();
 
+  
   double count(WheelId id);
 private:
   const Wheel *_wheels;

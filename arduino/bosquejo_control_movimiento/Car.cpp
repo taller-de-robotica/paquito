@@ -1,5 +1,6 @@
 #include "Arduino.h"
 #include "Car.h"
+#include <cmath>
 
 
 // Wheel
@@ -72,6 +73,11 @@ void Encoder::begin()
     reset_count();
 }
 
+int Encoder::getCount()
+{
+    return _counter;
+}
+
 void Encoder::reset_count()
 {
     _counter = 0;
@@ -86,28 +92,60 @@ void Encoder::read(int readings[2])
     return readings;
 }
 
-double Encoder::count()
+/*
+    Función que actualiza el valor del contador de pulsos del encoder en cuestión.
+*/
+int Encoder::update()
 {
     _s1State = digitalRead(S1_PIN);
+
     unsigned long time = millis();
     int delta = time - _lastTime;
     _lastTime = time;
-    if(_s1State != _s1LastState)
-    {
+
+    // El sensor S1 cambió de posición (giró la rueda)
+    if(_s1State != _s1LastState){
+
         _s2State = digitalRead(S2_PIN);
-        // If S2 state is different to the S1 state, that means the encoder is rotating clockwise
-        if (_s2State != _s1State)
-        {
-            _counter++;
-        }
-        else
-        {
-            _counter--;
-        }
-        _s1LastState = _s1State;  // Updates the previous S1 state with the current state
+        if (_s2State != _s1State) _counter++;   // La rueda giró hacia adelante
+        else _counter--;                        // La ruega giró hacia atrás
+        
+        _s1LastState = _s1State;  // Actualizamos el estado del sensor S1
     }
     //return double(_counter)/double(time);
     return _counter;
+}
+
+
+double Encoder::getVelocidad(){
+    
+    unsigned long tiempoActual = millis();
+
+    // 2. Verificamos si pasó el tiempo de muestreo (Non-blocking delay)
+    if (tiempoActual - tiempoAnterior >= intervaloMuestreo) {
+    
+   
+    long pulsosActuales = getCount();
+  
+    // B. Calculamos la diferencia de pulsos y tiempo
+    long deltaPulsos = pulsosActuales - pulsosAnteriores;
+    double deltaTiempoSegundos = (tiempoActual - tiempoAnterior) / 1000.0; //¿Por qué acá dividimos entre 1000?, porque eso convierte de milisegundos a segundos
+    //double deltaTiempoSegundos = (tiempoActual - tiempoAnterior);
+
+    // C. Aplicamos la fórmula para Radianes por Segundo
+    // (DeltaPulsos / PPR) = Vueltas
+    // Vueltas * 2 * PI = Radianes
+    // Radianes / Tiempo = Rad/s
+    double velocidadRadS = (deltaPulsos / PPR) * 2.0 * M_PI / deltaTiempoSegundos;
+
+    // E. Actualizar variables "anteriores" para el siguiente ciclo
+    pulsosAnteriores = pulsosActuales;
+    tiempoAnterior = tiempoActual;
+    ultimaVelocidadRadS = velocidadRadS;
+    return velocidadRadS;
+  }
+
+    return ultimaVelocidadRadS;
 }
 
 
@@ -131,6 +169,24 @@ void Car::begin()
       }
     }
  }
+
+/*
+    Nuevo método que actualiza los contadores de los 4 encoders del carro 
+    (suma o resta éstos contadores).
+    Éste método se debe de invocar en el loop para que se actualicen constantemente
+    dichos contadores.
+*/
+void Car::updateEncoders(){
+    // Si el carro no tiene encoders, no se hace nada
+    if(_encoders == NULL) return;
+
+    //Si el carro sí tiene encoders, se invoca la función que actualiza el 
+    //contador de pulsos de cada encoder
+    _encoders[FL].update(); 
+    _encoders[FR].update();
+    _encoders[BL].update();
+    _encoders[BR].update();
+}
 
   // Mueve cada llanta una vez hacia adelante y hacia atrás.
 void Car::testWheels()
@@ -276,7 +332,12 @@ void Car::setSignedSpeeds(int16_t signedSpeeds[NUM_WHEELS])
     */
 }
 
+float Car::getVelocidad(WheelId id)
+{
+    return _encoders[id].getVelocidad();
+}
+
 double Car::count(WheelId id)
 {
-    return _encoders[id].count();
+    return _encoders[id].getCount();
 }
