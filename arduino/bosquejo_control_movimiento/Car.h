@@ -10,7 +10,7 @@
 class Wheel
 {
 public:
-  Wheel(unsigned int sp, unsigned int fp, unsigned int bp);
+  Wheel(unsigned int sfp, unsigned int sbp, unsigned int fp, unsigned int bp);
 
   void begin();
 
@@ -23,7 +23,8 @@ public:
   // Auxiliar para depurar pines.
   void printStatus(String name);
 private:
-  const unsigned int SPEED_PIN;
+  const unsigned int SPEED_FORWARD_PIN;
+  const unsigned int SPEED_BACKWARD_PIN;
   const unsigned int FORWARD_PIN;
   const unsigned int BACKWARD_PIN;
 };

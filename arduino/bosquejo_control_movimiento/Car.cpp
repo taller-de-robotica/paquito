@@ -5,13 +5,14 @@
 
 // Wheel
 
-Wheel::Wheel(unsigned int sp, unsigned int fp, unsigned int bp) : SPEED_PIN(sp), FORWARD_PIN(fp), BACKWARD_PIN(bp) {}
+Wheel::Wheel(unsigned int sfp, unsigned int sbp, unsigned int fp, unsigned int bp) : SPEED_FORWARD_PIN(sfp), SPEED_BACKWARD_PIN(sbp), FORWARD_PIN(fp), BACKWARD_PIN(bp) {}
 
 void Wheel::begin()
 {
     pinMode(FORWARD_PIN, OUTPUT);
     pinMode(BACKWARD_PIN, OUTPUT);
-    pinMode(SPEED_PIN, OUTPUT);
+    pinMode(SPEED_FORWARD_PIN, OUTPUT);
+    pinMode(SPEED_BACKWARD_PIN, OUTPUT);
 
     stop();
 }
@@ -21,17 +22,21 @@ void Wheel::moveForward(unsigned int speed)
     //printStatus("mF ");
 
     digitalWrite(FORWARD_PIN, HIGH);
-    digitalWrite(BACKWARD_PIN, LOW);
-    analogWrite(SPEED_PIN, speed);
+    digitalWrite(BACKWARD_PIN, HIGH);
+
+    analogWrite(SPEED_FORWARD_PIN, speed);
+    analogWrite(SPEED_BACKWARD_PIN, 0);
 }
 
 void Wheel::moveBackward(unsigned int speed)
 {
     //printStatus("mB");
 
-    digitalWrite(FORWARD_PIN, LOW);
+    digitalWrite(FORWARD_PIN, HIGH);
     digitalWrite(BACKWARD_PIN, HIGH);
-    analogWrite(SPEED_PIN, speed);
+
+    analogWrite(SPEED_FORWARD_PIN, 0);
+    analogWrite(SPEED_BACKWARD_PIN, speed);
 }
 
 void Wheel::setSignedSpeed(int16_t speed)
@@ -48,7 +53,12 @@ void Wheel::setSignedSpeed(int16_t speed)
 void Wheel::stop()
 {
     //printStatus("S");
-    analogWrite(SPEED_PIN, 0);
+    // No sé si las siguientes líneas añaden seguridad o no
+    // digitalWrite(FORWARD_PIN, HIGH);
+    // digitalWrite(BACKWARD_PIN, HIGH);
+
+    analogWrite(SPEED_FORWARD_PIN, 0);
+    analogWrite(SPEED_BACKWARD_PIN, 0);
 }
 
 void Wheel::printStatus(String name)
@@ -59,7 +69,10 @@ void Wheel::printStatus(String name)
     Serial.print(" ");
     Serial.print(BACKWARD_PIN);
     Serial.print(" ");
-    Serial.println(SPEED_PIN);
+    Serial.println(SPEED_FORWARD_PIN);
+    Serial.print(" ");
+    Serial.println(SPEED_BACKWARD_PIN);
+    Serial.print(" ");
 }
 
 // Encoder
