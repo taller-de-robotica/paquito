@@ -24,8 +24,8 @@ const int CAMERA_SERVO = 2;
 // Llanta Front Right - Delantera Derecha
 const int r_en_FR = 25;
 const int l_en_FR = 24;
-const int r_pwm_FR  = 11;
-const int l_pwm_FR  = 10;
+const int r_pwm_FR  = 11; //En el controlador ésto apuntará a l_pwm_FR
+const int l_pwm_FR  = 10; //En el controlador ésto apuntará a r_pwm_FR
 
 // Llanta Front Left - Delantera Izquierda
 const int r_en_FL = 23;
@@ -36,8 +36,8 @@ const int l_pwm_FL  = 12;
 // Llanta Back Right - Trasera Derecha
 const int r_en_BR = 29;
 const int l_en_BR = 28;
-const int r_pwm_BR  = 5;
-const int l_pwm_BR  = 4;
+const int r_pwm_BR  = 5;  //En el controlador ésto apuntará a l_pwm_BR
+const int l_pwm_BR  = 4;  //En el controlador ésto apuntará a r_pwm_BR
 
 // Llanta Back Left - Trasera Izquierda
 const int r_en_BL = 27;
