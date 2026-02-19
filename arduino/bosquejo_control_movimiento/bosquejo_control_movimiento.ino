@@ -111,14 +111,29 @@ unsigned long lastSpeedTime = 0;
 //   Encoder(RightMotorS1PinRB, RightMotorS2PinRB)
 // };
 
-
-// Llantas y Encoders para PACO
+// Llantas para PACO
 const Wheel WHEELS[] = {
-  Wheel(r_pwm_FL, l_pwm_FL, r_en_FL, l_en_FL),
-  Wheel(r_pwm_FR, l_pwm_FR, r_en_FR, l_en_FR),
-  Wheel(r_pwm_BL, l_pwm_BL, r_en_BL, l_en_BL),
-  Wheel(r_pwm_BR, l_pwm_BR, r_en_BR, l_en_BR)
+  Wheel(l_pwm_FL, r_pwm_FL, r_en_FL, l_en_FL),
+  Wheel(l_pwm_FR, r_pwm_FR, r_en_FR, l_en_FR),
+  Wheel(l_pwm_BL, r_pwm_BL, r_en_BL, l_en_BL),
+  Wheel(l_pwm_BR, r_pwm_BR, r_en_BR, l_en_BR)
 };
+
+// Llantas y Encoders para PACO (NO FUNCIONÓ, funciona pero al revés)
+// const Wheel WHEELS[] = {
+//   Wheel(r_pwm_FL, l_pwm_FL, r_en_FL, l_en_FL),
+//   Wheel(r_pwm_FR, l_pwm_FR, r_en_FR, l_en_FR),
+//   Wheel(r_pwm_BL, l_pwm_BL, r_en_BL, l_en_BL),
+//   Wheel(r_pwm_BR, l_pwm_BR, r_en_BR, l_en_BR)
+// };
+
+// Con esto ya debería funcionar: (NO FUNCIONÓ, Intento 2)
+// const Wheel WHEELS[] = {
+//   Wheel(l_pwm_FL, r_pwm_FL, r_en_FL, l_en_FL),
+//   Wheel(r_pwm_FR, l_pwm_FR, r_en_FR, l_en_FR),
+//   Wheel(l_pwm_BL, r_pwm_BL, r_en_BL, l_en_BL),
+//   Wheel(r_pwm_BR, l_pwm_BR, r_en_BR, l_en_BR)
+// };
 
 const Encoder ENCODERS[] = {
   Encoder(encoder_S1_FL, encoder_S2_FL),

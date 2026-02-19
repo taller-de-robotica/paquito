@@ -317,11 +317,22 @@ void Car::rotateCounterClockwise(unsigned int speed)
     _wheels[BL].moveBackward(speed);
 }
 
+
 void Car::setSignedSpeeds(int16_t signedSpeeds[NUM_WHEELS])
 {
+    // --- FIX DE ROTACIÓN INVERTIDA ---
+    // Intercambiar las diagonales invierte el sentido de giro
+    // sin afectar el avance (X) ni el movimiento de cangrejo (Y).
+    int16_t fixedSpeeds[NUM_WHEELS];
+    fixedSpeeds[FL] = signedSpeeds[BR]; // Cruzamos Diagonal 1
+    fixedSpeeds[BR] = signedSpeeds[FL];
+    
+    fixedSpeeds[FR] = signedSpeeds[BL]; // Cruzamos Diagonal 2
+    fixedSpeeds[BL] = signedSpeeds[FR];
+
     for(int i = 0; i < NUM_WHEELS; i++)
     {
-        int16_t speed = signedSpeeds[i];
+        int16_t speed = fixedSpeeds[i];
         if (speed > 0) {
             _wheels[i].moveForward(constrain(speed, 0, 255));
         } else if (speed < 0) {
@@ -330,20 +341,43 @@ void Car::setSignedSpeeds(int16_t signedSpeeds[NUM_WHEELS])
             _wheels[i].stop();
         }
     }
-    // Esta función sigue un orden diferente para el orden de las llantas
-    /*
-    _wheels[FL].setSignedSpeed(signedSpeeds[1]);
-    _wheels[FR].setSignedSpeed(signedSpeeds[0]);
-    _wheels[BR].setSignedSpeed(signedSpeeds[3]);
-    _wheels[BL].setSignedSpeed(signedSpeeds[2]);
-    */
-    /*
-    _wheels[FL].setSignedSpeed(signedSpeeds[0]);
-    _wheels[BL].setSignedSpeed(signedSpeeds[1]);
-    _wheels[FR].setSignedSpeed(signedSpeeds[2]);
-    _wheels[BR].setSignedSpeed(signedSpeeds[3]);
-    */
 }
+
+
+
+
+// Versión anterior de la función, el problema con ésto es que
+// cuando se le pide a PACO que gire a la izquierda, gira a la derecha y viceversa
+// El problema debe ser porque en ROS se hace un cálculo que, de antemano, indica al arduino
+// para donde girar, o cambia el orden en el que se le pasan los datos por el arreglo de velocidades
+// para que funcione en paquito (que sólo tiene un pin de velocidad)
+// void Car::setSignedSpeeds(int16_t signedSpeeds[NUM_WHEELS])
+// {
+//     for(int i = 0; i < NUM_WHEELS; i++)
+//     {
+//         int16_t speed = signedSpeeds[i];
+//         if (speed > 0) {
+//             _wheels[i].moveForward(constrain(speed, 0, 255));
+//         } else if (speed < 0) {
+//             _wheels[i].moveBackward(constrain(-1 * speed, 0, 255));
+//         } else {
+//             _wheels[i].stop();
+//         }
+//     }
+//     // Esta función sigue un orden diferente para el orden de las llantas
+//     /*
+//     _wheels[FL].setSignedSpeed(signedSpeeds[1]);
+//     _wheels[FR].setSignedSpeed(signedSpeeds[0]);
+//     _wheels[BR].setSignedSpeed(signedSpeeds[3]);
+//     _wheels[BL].setSignedSpeed(signedSpeeds[2]);
+//     */
+//     /*
+//     _wheels[FL].setSignedSpeed(signedSpeeds[0]);
+//     _wheels[BL].setSignedSpeed(signedSpeeds[1]);
+//     _wheels[FR].setSignedSpeed(signedSpeeds[2]);
+//     _wheels[BR].setSignedSpeed(signedSpeeds[3]);
+//     */
+// }
 
 float Car::getVelocidad(WheelId id)
 {
