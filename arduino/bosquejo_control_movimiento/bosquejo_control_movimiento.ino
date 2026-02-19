@@ -15,35 +15,75 @@ const int I2C_SLAVE_ADDRESS = 0x8; // Hexadecimal entre 8 y 127
 
 // Voz
 const int SPEAKER_PIN = 8;
-const int LED_PIN = 13;
+const int LED_PIN = 9;
 
 // Base Cámara
 const int CAMERA_SERVO = 2;
 
-// Llantas
-const int speedPinR = 9;            // Front Wheel PWM pin connect Model-Y M_B ENA 
-const int RightMotorDirPin1 = 26;   // Front Right Motor direction pin 1 to Model-Y M_B IN1 (K1)
-const int RightMotorDirPin2 = 27;   // Front Right Motor direction pin 2 to Model-Y M_B IN2 (K1)
-const int RightMotorS1PinRA = 30;   // Front Right Motor encoder Signal 1 Orange
-const int RightMotorS2PinRA = 32;   // Front Right Motor encoder Signal 2 Green
+// Llantas para PACO
+// Llanta Front Right - Delantera Derecha
+const int r_en_FR = 25;
+const int l_en_FR = 24;
+const int r_pwm_FR  = 11;
+const int l_pwm_FR  = 10;
 
-const int LeftMotorDirPin1 = 28;   // Front Left Motor direction pin 1 to Model-Y M_B IN3  (K3)
-const int LeftMotorDirPin2 = 29;   // Front Left Motor direction pin 2 to Model-Y M_B IN4  (K3)
-const int LeftMotorS1PinLA = 31;    // Front Left Motor encoder Signal 1 Orange
-const int LeftMotorS2PinLA = 33;    // Front Left Motor encoder Signal 2 Green
-const int speedPinL = 10;           // Front Wheel PWM pin connect Model-Y M_B ENB
+// Llanta Front Left - Delantera Izquierda
+const int r_en_FL = 23;
+const int l_en_FL = 22;
+const int r_pwm_FL  = 13;
+const int l_pwm_FL  = 12;
 
-const int speedPinRB = 11;          // Rear Wheel PWM pin connect Left Model-Y M_A ENA 
-const int RightMotorDirPin1B = 22;  // Rear Right Motor direction pin 1 to Model-Y M_A IN1 (K1)
-const int RightMotorDirPin2B = 23;  // Rear Right Motor direction pin 2 to Model-Y M_A IN2 (K1) 
-const int RightMotorS1PinRB = 34;   // Rear Right Motor encoder Signal 1 Orange
-const int RightMotorS2PinRB = 36;   // Rear Right Motor encoder Signal 2 Green
+// Llanta Back Right - Trasera Derecha
+const int r_en_BR = 29;
+const int l_en_BR = 28;
+const int r_pwm_BR  = 5;
+const int l_pwm_BR  = 4;
 
-const int LeftMotorDirPin1B = 24;  // Rear Left Motor direction pin 1 to Model-Y M_A IN3  (K3)
-const int LeftMotorDirPin2B = 25;  // Rear Left Motor direction pin 2 to Model-Y M_A IN4  (K3)
-const int LeftMotorS1PinLB = 35;    // Rear Left Motor encoder Signal 1 Orange
-const int LeftMotorS2PinLB = 37;    // Rear Left Motor encoder Signal 2 Green
-const int speedPinLB = 12;          // Rear Wheel PWM pin connect Model-Y M_A ENB
+// Llanta Back Left - Trasera Izquierda
+const int r_en_BL = 27;
+const int l_en_BL = 26;
+const int r_pwm_BL  = 7;
+const int l_pwm_BL  = 6;
+
+// Encoders
+// Encoders Front Right - Delantero Derecho
+const int encoder_S1_FR = 30;
+const int encoder_S2_FR = 32;
+// Encoders Front Left - Delantero Izquierdo
+const int encoder_S1_FL = 31;
+const int encoder_S2_FL = 33;
+// Encoders Back Right - Trasero Derecho
+const int encoder_S1_BR = 34;
+const int encoder_S2_BR = 36;
+// Encoders Back Left - Trasero Izquierdo
+const int encoder_S1_BL = 35;
+const int encoder_S2_BL = 37;
+
+
+// Llantas para Paquito
+// const int speedPinR = 9;            // Front Wheel PWM pin connect Model-Y M_B ENA 
+// const int RightMotorDirPin1 = 26;   // Front Right Motor direction pin 1 to Model-Y M_B IN1 (K1)
+// const int RightMotorDirPin2 = 27;   // Front Right Motor direction pin 2 to Model-Y M_B IN2 (K1)
+// const int RightMotorS1PinRA = 30;   // Front Right Motor encoder Signal 1 Orange
+// const int RightMotorS2PinRA = 32;   // Front Right Motor encoder Signal 2 Green
+
+// const int LeftMotorDirPin1 = 28;   // Front Left Motor direction pin 1 to Model-Y M_B IN3  (K3)
+// const int LeftMotorDirPin2 = 29;   // Front Left Motor direction pin 2 to Model-Y M_B IN4  (K3)
+// const int LeftMotorS1PinLA = 31;    // Front Left Motor encoder Signal 1 Orange
+// const int LeftMotorS2PinLA = 33;    // Front Left Motor encoder Signal 2 Green
+// const int speedPinL = 10;           // Front Wheel PWM pin connect Model-Y M_B ENB
+
+// const int speedPinRB = 11;          // Rear Wheel PWM pin connect Left Model-Y M_A ENA 
+// const int RightMotorDirPin1B = 22;  // Rear Right Motor direction pin 1 to Model-Y M_A IN1 (K1)
+// const int RightMotorDirPin2B = 23;  // Rear Right Motor direction pin 2 to Model-Y M_A IN2 (K1) 
+// const int RightMotorS1PinRB = 34;   // Rear Right Motor encoder Signal 1 Orange
+// const int RightMotorS2PinRB = 36;   // Rear Right Motor encoder Signal 2 Green
+
+// const int LeftMotorDirPin1B = 24;  // Rear Left Motor direction pin 1 to Model-Y M_A IN3  (K3)
+// const int LeftMotorDirPin2B = 25;  // Rear Left Motor direction pin 2 to Model-Y M_A IN4  (K3)
+// const int LeftMotorS1PinLB = 35;    // Rear Left Motor encoder Signal 1 Orange
+// const int LeftMotorS2PinLB = 37;    // Rear Left Motor encoder Signal 2 Green
+// const int speedPinLB = 12;          // Rear Wheel PWM pin connect Model-Y M_A ENB
 
 
 
@@ -56,18 +96,35 @@ unsigned long lastSpeedTime = 0;
 #include "Speak.h"
 #include "Car.h"
 
+// Llantas y Encoders para Paquito
+// const Wheel WHEELS[] = {
+//   Wheel(speedPinL,  LeftMotorDirPin1,   LeftMotorDirPin2),
+//   Wheel(speedPinR,  RightMotorDirPin1,  RightMotorDirPin2),
+//   Wheel(speedPinLB, LeftMotorDirPin1B,  LeftMotorDirPin2B),
+//   Wheel(speedPinRB, RightMotorDirPin1B, RightMotorDirPin2B)
+// };
+
+// const Encoder ENCODERS[] = {
+//   Encoder(LeftMotorS1PinLA,  LeftMotorS2PinLA),
+//   Encoder(RightMotorS1PinRA, RightMotorS2PinRA),
+//   Encoder(LeftMotorS1PinLB,  LeftMotorS2PinLB),
+//   Encoder(RightMotorS1PinRB, RightMotorS2PinRB)
+// };
+
+
+// Llantas y Encoders para PACO
 const Wheel WHEELS[] = {
-  Wheel(speedPinL,  LeftMotorDirPin1,   LeftMotorDirPin2),
-  Wheel(speedPinR,  RightMotorDirPin1,  RightMotorDirPin2),
-  Wheel(speedPinLB, LeftMotorDirPin1B,  LeftMotorDirPin2B),
-  Wheel(speedPinRB, RightMotorDirPin1B, RightMotorDirPin2B)
+  Wheel(r_pwm_FL, l_pwm_FL, r_en_FL, l_en_FL),
+  Wheel(r_pwm_FR, l_pwm_FR, r_en_FR, l_en_FR),
+  Wheel(r_pwm_BL, l_pwm_BL, r_en_BL, l_en_BL),
+  Wheel(r_pwm_BR, l_pwm_BR, r_en_BR, l_en_BR)
 };
 
 const Encoder ENCODERS[] = {
-  Encoder(LeftMotorS1PinLA,  LeftMotorS2PinLA),
-  Encoder(RightMotorS1PinRA, RightMotorS2PinRA),
-  Encoder(LeftMotorS1PinLB,  LeftMotorS2PinLB),
-  Encoder(RightMotorS1PinRB, RightMotorS2PinRB)
+  Encoder(encoder_S1_FL, encoder_S2_FL),
+  Encoder(encoder_S1_FR, encoder_S2_FR),
+  Encoder(encoder_S1_BL, encoder_S2_BL),
+  Encoder(encoder_S1_BR, encoder_S2_BR)
 };
 
 Car paquito(WHEELS, ENCODERS);
@@ -439,6 +496,7 @@ void loop() {
 
 // Función que se ejecuta cuando el maestro va a enviar información.
 void receiveEvent(int howMany) {
+  //Serial.print("Llegó algo por i2c");
   if (howMany == 9) {
     // Velocidad llanta por llanta
     // Verificamos comando
