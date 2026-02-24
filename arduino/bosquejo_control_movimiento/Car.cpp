@@ -80,8 +80,8 @@ Encoder::Encoder(unsigned int s1, unsigned int s2) : S1_PIN(s1), S2_PIN(s2), _co
 
 void Encoder::begin()
 {
-    pinMode (S1_PIN, INPUT);
-    pinMode (S2_PIN, INPUT);
+    pinMode (S1_PIN, INPUT_PULLUP);
+    pinMode (S2_PIN, INPUT_PULLUP);
 
     reset_count();
 }

@@ -159,6 +159,7 @@ float decrease_speed_factor()
 {
   float temp = speed_decay - SPEED_DECAY_RATE;
   speed_decay = max(temp, 0);
+  return speed_decay;
 }
 
 // Estado de movimiento
@@ -372,7 +373,7 @@ void execute(Command c, unsigned char args[]) {
       Serial.print("--> Comando desconocido");
       Serial.println(c);
   }
-  delay(100); // 0.1mm
+  //delay(100); // 0.1mm      QUITAMOS ESTE DELAY PARA QUE EL PULL UP DE LOS ENCODERS FUNCIONE BIEN
 }
 
 // Protocolo para recibir velocidades por I2C
@@ -394,7 +395,7 @@ int16_t wheel_speeds[Car::NUM_WHEELS];
 
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);       // AUMENTAMOS LA VELOCIDAD DE 9600 A 115200
   
   // Servo de cámara
   cameraBaseServo.attach(CAMERA_SERVO);
@@ -478,14 +479,15 @@ void loop() {
     Serial.println("======================");
 
 
-  // Enviar información del codificador
-  Serial2.print("[ENC] ");
-  for(int i = 0; i < Car::NUM_WHEELS; i++)
-  {
-    Serial2.print(paquito.count(i));
-    Serial2.print(" ");
-  }
-  Serial2.println("[/ENC]");
+  // // LO DE ABAJO LO COMENTAMOS PORQUE TODAVÍA NO LO VAMOS A USAR
+  // // Enviar información del codificador
+  // Serial2.print("[ENC] ");
+  // for(int i = 0; i < Car::NUM_WHEELS; i++)
+  // {
+  //   Serial2.print(paquito.count(i));
+  //   Serial2.print(" ");
+  // }
+  // Serial2.println("[/ENC]");
   }
 
 
