@@ -71,7 +71,7 @@ class Car
 public:
   static const int NUM_WHEELS = 4;
 
-  Car(const Wheel wheels[NUM_WHEELS], const Encoder encoders[NUM_WHEELS]);
+  Car(const Wheel wheels[NUM_WHEELS], Encoder encoders[NUM_WHEELS]);
 
   Car(const Wheel wheels[NUM_WHEELS]);
 
@@ -102,7 +102,7 @@ public:
   double count(WheelId id);
 private:
   const Wheel *_wheels;
-  const Encoder *_encoders;
+  Encoder *_encoders;
 };
 
 #endif

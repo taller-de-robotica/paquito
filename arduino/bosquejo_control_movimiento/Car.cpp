@@ -163,7 +163,7 @@ double Encoder::getVelocidad(){
 
 
 // Car
-Car::Car(const Wheel wheels[NUM_WHEELS], const Encoder encoders[NUM_WHEELS])
+Car::Car(const Wheel wheels[NUM_WHEELS], Encoder encoders[NUM_WHEELS])
     : _wheels(wheels), _encoders(encoders){}
 
 Car::Car(const Wheel wheels[NUM_WHEELS])

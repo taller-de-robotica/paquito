@@ -135,7 +135,7 @@ const Wheel WHEELS[] = {
 //   Wheel(r_pwm_BR, l_pwm_BR, r_en_BR, l_en_BR)
 // };
 
-const Encoder ENCODERS[] = {
+Encoder ENCODERS[] = {
   Encoder(encoder_S1_FL, encoder_S2_FL),
   Encoder(encoder_S1_FR, encoder_S2_FR),
   Encoder(encoder_S1_BL, encoder_S2_BL),
