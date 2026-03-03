@@ -1,10 +1,9 @@
 #include "Arduino.h"
 #include "Car.h"
-//#include <cmath>
-
+#include "Config.h"
 
 // Wheel
-
+#ifdef USAR_ROBOT_PACO
 Wheel::Wheel(unsigned int sfp, unsigned int sbp, unsigned int fp, unsigned int bp) : SPEED_FORWARD_PIN(sfp), SPEED_BACKWARD_PIN(sbp), FORWARD_PIN(fp), BACKWARD_PIN(bp) {}
 
 void Wheel::begin()
@@ -39,16 +38,6 @@ void Wheel::moveBackward(unsigned int speed)
     analogWrite(SPEED_BACKWARD_PIN, speed);
 }
 
-void Wheel::setSignedSpeed(int16_t speed)
-{
-    if (speed > 0) {
-        moveForward(constrain(speed, 0, 255));
-    } else if (speed < 0) {
-        moveBackward(constrain(-1 * speed, 0, 255));
-    } else {
-        stop();
-    }
-}
 
 void Wheel::stop()
 {
@@ -73,6 +62,64 @@ void Wheel::printStatus(String name)
     Serial.print(" ");
     Serial.println(SPEED_BACKWARD_PIN);
     Serial.print(" ");
+}
+#else 
+Wheel::Wheel(unsigned int sp, unsigned int fp, unsigned int bp) : SPEED_PIN(sp), FORWARD_PIN(fp), BACKWARD_PIN(bp) {}
+
+void Wheel::begin()
+{
+    pinMode(FORWARD_PIN, OUTPUT);
+    pinMode(BACKWARD_PIN, OUTPUT);
+    pinMode(SPEED_PIN, OUTPUT);
+
+    stop();
+}
+
+void Wheel::moveForward(unsigned int speed)
+{
+    //printStatus("mF ");
+
+    digitalWrite(FORWARD_PIN, HIGH);
+    digitalWrite(BACKWARD_PIN, LOW);
+    analogWrite(SPEED_PIN, speed);
+}
+
+void Wheel::moveBackward(unsigned int speed)
+{
+    //printStatus("mB");
+
+    digitalWrite(FORWARD_PIN, LOW);
+    digitalWrite(BACKWARD_PIN, HIGH);
+    analogWrite(SPEED_PIN, speed);
+}
+
+void Wheel::stop()
+{
+    //printStatus("S");
+    analogWrite(SPEED_PIN, 0);
+}
+
+void Wheel::printStatus(String name)
+{
+    Serial.print(name);
+    Serial.print(" ");
+    Serial.print(FORWARD_PIN);
+    Serial.print(" ");
+    Serial.print(BACKWARD_PIN);
+    Serial.print(" ");
+    Serial.println(SPEED_PIN);
+}
+#endif
+
+void Wheel::setSignedSpeed(int16_t speed)
+{
+    if (speed > 0) {
+        moveForward(constrain(speed, 0, 255));
+    } else if (speed < 0) {
+        moveBackward(constrain(-1 * speed, 0, 255));
+    } else {
+        stop();
+    }
 }
 
 // Encoder
@@ -317,7 +364,7 @@ void Car::rotateCounterClockwise(unsigned int speed)
     _wheels[BL].moveBackward(speed);
 }
 
-
+#ifdef USAR_ROBOT_PACO
 void Car::setSignedSpeeds(int16_t signedSpeeds[NUM_WHEELS])
 {
     // --- FIX DE ROTACIÓN INVERTIDA ---
@@ -342,7 +389,22 @@ void Car::setSignedSpeeds(int16_t signedSpeeds[NUM_WHEELS])
         }
     }
 }
-
+#else
+void Car::setSignedSpeeds(int16_t signedSpeeds[NUM_WHEELS])
+{
+    for(int i = 0; i < NUM_WHEELS; i++)
+    {
+        int16_t speed = signedSpeeds[i];
+        if (speed > 0) {
+            _wheels[i].moveForward(constrain(speed, 0, 255));
+        } else if (speed < 0) {
+            _wheels[i].moveBackward(constrain(-1 * speed, 0, 255));
+        } else {
+            _wheels[i].stop();
+        }
+    }
+}
+#endif
 
 
 

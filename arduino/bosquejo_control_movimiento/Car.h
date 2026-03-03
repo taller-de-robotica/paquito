@@ -6,11 +6,17 @@
 #define Car_h
 
 #include "Arduino.h"
+#include "Config.h"
 
 class Wheel
 {
 public:
-  Wheel(unsigned int sfp, unsigned int sbp, unsigned int fp, unsigned int bp);
+
+  #ifdef USAR_ROBOT_PACO
+    Wheel(unsigned int sfp, unsigned int sbp, unsigned int fp, unsigned int bp);
+  #else 
+    Wheel(unsigned int sp, unsigned int fp, unsigned int bp);
+  #endif
 
   void begin();
 
@@ -22,11 +28,18 @@ public:
 
   // Auxiliar para depurar pines.
   void printStatus(String name);
+  
 private:
-  const unsigned int SPEED_FORWARD_PIN;
-  const unsigned int SPEED_BACKWARD_PIN;
-  const unsigned int FORWARD_PIN;
-  const unsigned int BACKWARD_PIN;
+  #ifdef USAR_ROBOT_PACO
+    const unsigned int SPEED_FORWARD_PIN;
+    const unsigned int SPEED_BACKWARD_PIN;
+    const unsigned int FORWARD_PIN;
+    const unsigned int BACKWARD_PIN;
+  #else
+    const unsigned int SPEED_PIN;
+    const unsigned int FORWARD_PIN;
+    const unsigned int BACKWARD_PIN;
+  #endif
 };
 
 enum WheelId
