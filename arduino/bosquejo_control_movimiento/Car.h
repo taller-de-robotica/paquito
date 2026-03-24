@@ -6,11 +6,17 @@
 #define Car_h
 
 #include "Arduino.h"
+#include "Config.h"
 
 class Wheel
 {
 public:
-  Wheel(unsigned int sp, unsigned int fp, unsigned int bp);
+
+  #ifdef USAR_ROBOT_PACO
+    Wheel(unsigned int sfp, unsigned int sbp, unsigned int fp, unsigned int bp);
+  #else 
+    Wheel(unsigned int sp, unsigned int fp, unsigned int bp);
+  #endif
 
   void begin();
 
@@ -22,10 +28,18 @@ public:
 
   // Auxiliar para depurar pines.
   void printStatus(String name);
+  
 private:
-  const unsigned int SPEED_PIN;
-  const unsigned int FORWARD_PIN;
-  const unsigned int BACKWARD_PIN;
+  #ifdef USAR_ROBOT_PACO
+    const unsigned int SPEED_FORWARD_PIN;
+    const unsigned int SPEED_BACKWARD_PIN;
+    const unsigned int FORWARD_PIN;
+    const unsigned int BACKWARD_PIN;
+  #else
+    const unsigned int SPEED_PIN;
+    const unsigned int FORWARD_PIN;
+    const unsigned int BACKWARD_PIN;
+  #endif
 };
 
 enum WheelId
@@ -43,8 +57,10 @@ public:
 
   void begin();
   void read(int readings[2]);
-  double count();
+  int getCount();
   void reset_count();
+  int update();
+  double getVelocidad();
 private:
   const unsigned int S1_PIN;
   const unsigned int S2_PIN;
@@ -53,6 +69,14 @@ private:
   int _s1State;
   int _s2State;
   int _s1LastState;
+  double ultimaVelocidadRadS=0;
+
+  //Los siguientes son nuevos y son para calcular la velocidad
+  unsigned long tiempoAnterior = 0;
+  unsigned long pulsosAnteriores = 0;
+  //const float PPR = 1320.0; valor antiguo y de prueba
+  const float PPR = 683.0; //Valor adquirido empíricamente
+  const int intervaloMuestreo = 100; // 100ms es un buen equilibrio (10Hz)
 };
 
 class Car
@@ -60,7 +84,7 @@ class Car
 public:
   static const int NUM_WHEELS = 4;
 
-  Car(const Wheel wheels[NUM_WHEELS], const Encoder encoders[NUM_WHEELS]);
+  Car(const Wheel wheels[NUM_WHEELS], Encoder encoders[NUM_WHEELS]);
 
   Car(const Wheel wheels[NUM_WHEELS]);
 
@@ -84,11 +108,14 @@ public:
   void rotateClockwise(unsigned int speed);
   void rotateCounterClockwise(unsigned int speed);
   void setSignedSpeeds(int16_t signedSpeeds[NUM_WHEELS]);
+  void updateEncoders();
 
+  float getVelocidad(WheelId id);
+  
   double count(WheelId id);
 private:
   const Wheel *_wheels;
-  const Encoder *_encoders;
+  Encoder *_encoders;
 };
 
 #endif
