@@ -20,6 +20,12 @@ def generate_launch_description():
             output='screen',
         ),
         Node(
+            package=package_name,
+            executable='serial_reader_node',
+            name='serial_reader_node',
+            output='screen',
+        ),
+        Node(
             package='rpy_camera', # Nombre que pusiste en setup.py
             executable='camera_publisher_node',    # El nombre del entry_point
             name='pi_camera_streamer',
