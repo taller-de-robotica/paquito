@@ -11,43 +11,34 @@
  *
  */
 #include <Wire.h>
-const int I2C_SLAVE_ADDRESS = 0x8; // Hexadecimal entre 8 y 127
-
-// Voz
-const int SPEAKER_PIN = 8;
-const int LED_PIN = 13;
-
-// Base Cámara
-const int CAMERA_SERVO = 2;
-
-// Llantas
-const int speedPinR = 9;            // Front Wheel PWM pin connect Model-Y M_B ENA 
-const int RightMotorDirPin1 = 26;   // Front Right Motor direction pin 1 to Model-Y M_B IN1 (K1)
-const int RightMotorDirPin2 = 27;   // Front Right Motor direction pin 2 to Model-Y M_B IN2 (K1)
-const int RightMotorS1PinRA = 30;   // Front Right Motor encoder Signal 1 Orange
-const int RightMotorS2PinRA = 32;   // Front Right Motor encoder Signal 2 Green
-
-const int LeftMotorDirPin1 = 28;   // Front Left Motor direction pin 1 to Model-Y M_B IN3  (K3)
-const int LeftMotorDirPin2 = 29;   // Front Left Motor direction pin 2 to Model-Y M_B IN4  (K3)
-const int LeftMotorS1PinLA = 31;    // Front Left Motor encoder Signal 1 Orange
-const int LeftMotorS2PinLA = 33;    // Front Left Motor encoder Signal 2 Green
-const int speedPinL = 10;           // Front Wheel PWM pin connect Model-Y M_B ENB
-
-const int speedPinRB = 11;          // Rear Wheel PWM pin connect Left Model-Y M_A ENA 
-const int RightMotorDirPin1B = 22;  // Rear Right Motor direction pin 1 to Model-Y M_A IN1 (K1)
-const int RightMotorDirPin2B = 23;  // Rear Right Motor direction pin 2 to Model-Y M_A IN2 (K1) 
-const int RightMotorS1PinRB = 34;   // Rear Right Motor encoder Signal 1 Orange
-const int RightMotorS2PinRB = 36;   // Rear Right Motor encoder Signal 2 Green
-
-const int LeftMotorDirPin1B = 24;  // Rear Left Motor direction pin 1 to Model-Y M_A IN3  (K3)
-const int LeftMotorDirPin2B = 25;  // Rear Left Motor direction pin 2 to Model-Y M_A IN4  (K3)
-const int LeftMotorS1PinLB = 35;    // Rear Left Motor encoder Signal 1 Orange
-const int LeftMotorS2PinLB = 37;    // Rear Left Motor encoder Signal 2 Green
-const int speedPinLB = 12;          // Rear Wheel PWM pin connect Model-Y M_A ENB
-
-
+#include "Config.h"
+#include "ConfigPines.h"
 #include "Speak.h"
 #include "Car.h"
+
+
+// Variables para temporizador de impresión en el PC (evita usar delays)
+unsigned long lastEncoderTime = 0;
+unsigned long lastSpeedTime = 0;
+
+
+#ifdef USAR_ROBOT_PACO
+// Llantas para PACO
+const Wheel WHEELS[] = {
+  Wheel(l_pwm_FL, r_pwm_FL, r_en_FL, l_en_FL),
+  Wheel(l_pwm_FR, r_pwm_FR, r_en_FR, l_en_FR),
+  Wheel(l_pwm_BL, r_pwm_BL, r_en_BL, l_en_BL),
+  Wheel(l_pwm_BR, r_pwm_BR, r_en_BR, l_en_BR)
+};
+
+Encoder ENCODERS[] = {
+  Encoder(encoder_S1_FL, encoder_S2_FL),
+  Encoder(encoder_S1_FR, encoder_S2_FR),
+  Encoder(encoder_S1_BL, encoder_S2_BL),
+  Encoder(encoder_S1_BR, encoder_S2_BR)
+};
+
+#else 
 
 const Wheel WHEELS[] = {
   Wheel(speedPinL,  LeftMotorDirPin1,   LeftMotorDirPin2),
@@ -56,12 +47,14 @@ const Wheel WHEELS[] = {
   Wheel(speedPinRB, RightMotorDirPin1B, RightMotorDirPin2B)
 };
 
-const Encoder ENCODERS[] = {
+Encoder ENCODERS[] = {
   Encoder(LeftMotorS1PinLA,  LeftMotorS2PinLA),
   Encoder(RightMotorS1PinRA, RightMotorS2PinRA),
   Encoder(LeftMotorS1PinLB,  LeftMotorS2PinLB),
   Encoder(RightMotorS1PinRB, RightMotorS2PinRB)
 };
+
+#endif
 
 Car paquito(WHEELS, ENCODERS);
 
@@ -80,6 +73,7 @@ float decrease_speed_factor()
 {
   float temp = speed_decay - SPEED_DECAY_RATE;
   speed_decay = max(temp, 0);
+  return speed_decay;
 }
 
 // Estado de movimiento
@@ -293,7 +287,7 @@ void execute(Command c, unsigned char args[]) {
       Serial.print("--> Comando desconocido");
       Serial.println(c);
   }
-  delay(100); // 0.1mm
+  //delay(100); // 0.1mm      QUITAMOS ESTE DELAY PARA QUE EL PULL UP DE LOS ENCODERS FUNCIONE BIEN
 }
 
 // Protocolo para recibir velocidades por I2C
@@ -315,7 +309,7 @@ int16_t wheel_speeds[Car::NUM_WHEELS];
 
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);       // AUMENTAMOS LA VELOCIDAD DE 9600 A 115200
   
   // Servo de cámara
   cameraBaseServo.attach(CAMERA_SERVO);
@@ -327,7 +321,13 @@ void setup() {
 
   // Inicializar carro
   paquito.begin();
-  Serial.println("*.´`. paquito init .´`.*");
+
+  #ifdef USAR_ROBOT_PACO
+    Serial.println("*.´`. PACO init .´`.*");
+  #else
+    Serial.println("*.´`. PAQUITO init .´`.*");
+  #endif
+  
 
   // Inicializar comunicación I2C
   Wire.begin(I2C_SLAVE_ADDRESS);
@@ -359,6 +359,10 @@ void limitSpeed(int16_t signedSpeeds[Car::NUM_WHEELS]){
 }
 
 void loop() {
+
+  // 1. === POLLING DE ENCODERS (DEBE EJECUTARSE SIEMPRE) ===
+  paquito.updateEncoders();
+
   if (newData) {
     // Depura para verificar qué llega
     // Serial.print("FL: "); Serial.print(rxData.val.fl);
@@ -382,15 +386,43 @@ void loop() {
     decrease_speed_factor();
   }
 
+  // 3. === IMPRESIÓN DE ENCODERS EN EL MONITOR SERIAL DE PC ===
+  // Imprimimos cada medio segundo (500 ms)
+  if (millis() - lastEncoderTime >= 500) {
+    lastEncoderTime = millis();
+    
+    Serial.println("====== ENCODERS ======");
+    Serial.print("FL: "); Serial.println(paquito.count(FL));
+    Serial.print("FR: "); Serial.println(paquito.count(FR));
+    Serial.print("BL: "); Serial.println(paquito.count(BL));
+    Serial.print("BR: "); Serial.println(paquito.count(BR));
+    Serial.println("======================");
 
-  // Enviar información del codificador
-  Serial2.print("[ENC] ");
-  for(int i = 0; i < Car::NUM_WHEELS; i++)
-  {
-    Serial2.print(paquito.count(i));
-    Serial2.print(" ");
+
+  // // LO DE ABAJO LO COMENTAMOS PORQUE TODAVÍA NO LO VAMOS A USAR
+  // // Enviar información del codificador
+  // Serial2.print("[ENC] ");
+  // for(int i = 0; i < Car::NUM_WHEELS; i++)
+  // {
+  //   Serial2.print(paquito.count(i));
+  //   Serial2.print(" ");
+  // }
+  // Serial2.println("[/ENC]");
   }
-  Serial2.println("[/ENC]");
+
+
+  // 4. === IMPRESIÓN DE VELOCIDAD DE LOS MOTORES ===
+  // Imprimimos cada  segundo (1000 ms)
+  if (millis() - lastSpeedTime >= 1000) {
+    lastSpeedTime = millis();
+    
+    Serial.println("====== VELOCIDADES ======");
+    Serial.print("FL: "); Serial.println(paquito.getVelocidad(FL));
+    Serial.print("FR: "); Serial.println(paquito.getVelocidad(FR));
+    Serial.print("BL: "); Serial.println(paquito.getVelocidad(BL));
+    Serial.print("BR: "); Serial.println(paquito.getVelocidad(BR));
+    Serial.println("======================");
+  }
 
 
   if (speak) {
@@ -401,6 +433,7 @@ void loop() {
 
 // Función que se ejecuta cuando el maestro va a enviar información.
 void receiveEvent(int howMany) {
+  //Serial.print("Llegó algo por i2c");
   if (howMany == 9) {
     // Velocidad llanta por llanta
     // Verificamos comando
