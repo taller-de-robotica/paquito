@@ -36,10 +36,18 @@ ament_target_dependencies(command_executor
   std_msgs
 )
 
+
+# --- NUEVO NODO LECTOR SERIAL ---
+add_executable(serial_reader_node src/serial_reader_node.cpp)
+ament_target_dependencies(serial_reader_node rclcpp std_msgs)
+
+
+
 # 3. INSTALACIÓN DE EJECUTABLES
 install(TARGETS
   command_executor
   car_velocity_subscriber
+  serial_reader_node
   DESTINATION lib/${PROJECT_NAME}
 )
 
