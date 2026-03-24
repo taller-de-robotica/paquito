@@ -310,6 +310,7 @@ int16_t wheel_speeds[Car::NUM_WHEELS];
 
 void setup() {
   Serial.begin(115200);       // AUMENTAMOS LA VELOCIDAD DE 9600 A 115200
+  Serial1.begin(115200);      // Para los sensores
   
   // Servo de cámara
   cameraBaseServo.attach(CAMERA_SERVO);
@@ -413,7 +414,7 @@ void loop() {
 
   // 4. === IMPRESIÓN DE VELOCIDAD DE LOS MOTORES ===
   // Imprimimos cada  segundo (1000 ms)
-  if (millis() - lastSpeedTime >= 1000) {
+  if (millis() - lastSpeedTime >= 200) {
     lastSpeedTime = millis();
     
     Serial.println("====== VELOCIDADES ======");
@@ -422,6 +423,11 @@ void loop() {
     Serial.print("BL: "); Serial.println(paquito.getVelocidad(BL));
     Serial.print("BR: "); Serial.println(paquito.getVelocidad(BR));
     Serial.println("======================");
+
+    Serial1.print(paquito.getVelocidad(FL)); Serial1.print(",");
+    Serial1.print(paquito.getVelocidad(FR)); Serial1.print(",");
+    Serial1.print(paquito.getVelocidad(BL)); Serial1.print(",");
+    Serial1.print(paquito.getVelocidad(BR)); Serial1.println();
   }
 
 
