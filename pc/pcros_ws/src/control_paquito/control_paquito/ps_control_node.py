@@ -3,7 +3,7 @@ from rclpy.node import Node
 
 from sensor_msgs.msg import Joy
 from std_msgs.msg import String
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import TwistStamped
 
 class JoyControl(Node):
     EPSILON = 0.01
@@ -27,15 +27,15 @@ class JoyControl(Node):
         )
 
         self.vel_command_publisher = self.create_publisher(
-            Twist,
-            '/cmd_vel',
+            TwistStamped,
+            '/paco/cmd_vel',
             10
         )
 
         self.get_logger().info(f"Escuchando al control de mando")
 
     def joy_listener_callback(self, msg):
-        self.get_logger().info(f"Mensaje: {msg}")
+        #self.get_logger().info(f"Mensaje: {msg}")
         axes = msg.axes
         buttons = msg.buttons
 
@@ -84,10 +84,11 @@ class JoyControl(Node):
             ax_x = axes[1]
             ax_wz = axes[3]
 
-            vel_msg = Twist()
-            vel_msg.linear.x = ax_x * JoyControl.MAX_LINE_SPEED
-            vel_msg.linear.y = ax_y * JoyControl.MAX_LINE_SPEED
-            vel_msg.angular.z = ax_wz * JoyControl.MAX_ANGLE_SPEED
+            vel_msg = TwistStamped()
+            vel_msg.header.stamp = self.get_clock().now().to_msg()
+            vel_msg.twist.linear.x = ax_x * JoyControl.MAX_LINE_SPEED
+            vel_msg.twist.linear.y = ax_y * JoyControl.MAX_LINE_SPEED
+            vel_msg.twist.angular.z = ax_wz * JoyControl.MAX_ANGLE_SPEED
             self.vel_command_publisher.publish(vel_msg)
 
 
